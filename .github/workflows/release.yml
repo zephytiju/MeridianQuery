@@ -4,9 +4,23 @@ name: Release
 on:
   push:
     tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to verify or repair
+        required: true
+        type: string
+      publish_pypi:
+        description: Publish the rebuilt distributions to PyPI
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
   build:
@@ -22,6 +36,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
+          ref: ${{ env.RELEASE_TAG }}
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
@@ -29,9 +44,9 @@ jobs:
           cache: pip
       - name: Verify tag, version, and main ancestry
         run: |
-          python scripts/check_version.py "${GITHUB_REF_NAME}"
+          python scripts/check_version.py "${RELEASE_TAG}"
           git fetch origin main
-          git merge-base --is-ancestor "${GITHUB_SHA}" origin/main
+          git merge-base --is-ancestor HEAD origin/main
       - name: Install released dependencies and release tools
         run: python -m pip install '.[test]'
       - name: Run complete verification
@@ -51,6 +66,7 @@ jobs:
           format: spdx-json
           output-file: dist/meridian-storage-query.spdx.json
       - name: Attest distribution provenance
+        if: github.event_name == 'push'
         uses: actions/attest-build-provenance@96b4a1ef7235a096b17240c259729fdd70c83d45 # v2
         with:
           subject-path: |
@@ -90,18 +106,35 @@ jobs:
         with:
           name: release-evidence
           path: dist
-      - name: Create immutable GitHub release
+      - name: Create or verify immutable GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create "${GITHUB_REF_NAME}" dist/*
-          --repo "${GITHUB_REPOSITORY}"
-          --verify-tag
-          --generate-notes
+        run: |
+          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            mkdir published-release
+            gh release download "${RELEASE_TAG}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --dir published-release
+            for artifact in dist/*.whl dist/*.tar.gz dist/SHA256SUMS; do
+              cmp "${artifact}" "published-release/$(basename "${artifact}")"
+            done
+            jq --sort-keys 'del(.documentNamespace, .creationInfo)' \
+              dist/meridian-storage-query.spdx.json > built-sbom.json
+            jq --sort-keys 'del(.documentNamespace, .creationInfo)' \
+              published-release/meridian-storage-query.spdx.json > published-sbom.json
+            diff --brief built-sbom.json published-sbom.json
+          else
+            gh release create "${RELEASE_TAG}" dist/* \
+              --repo "${GITHUB_REPOSITORY}" \
+              --verify-tag \
+              --generate-notes
+          fi
 
   publish-pypi:
     name: publish PyPI with OIDC
-    if: vars.PYPI_TRUSTED_PUBLISHING_ENABLED == 'true'
+    if: >-
+      (github.event_name == 'push' && vars.PYPI_TRUSTED_PUBLISHING_ENABLED == 'true') ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish_pypi)
     needs: build
     runs-on: ubuntu-latest
     environment:
