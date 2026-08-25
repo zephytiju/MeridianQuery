@@ -15,4 +15,10 @@
    publication requires the project owner to establish namespace/trusted-publisher ownership; do
    not use or request an account password or bypass MFA.
 
-Tags are immutable. If a release fails after publication, issue a new patch version.
+The workflow can also be dispatched with an existing tag and `publish_pypi=false`. That recovery
+path checks out the tag, reruns every build gate, and compares the rebuilt wheel, sdist, checksum
+manifest, and normalized SPDX SBOM with the existing GitHub release without mutating it. Never
+enable PyPI publication when re-verifying a version that is already present.
+
+Tags and published distributions are immutable. If package content must change after publication,
+issue a new patch version.
