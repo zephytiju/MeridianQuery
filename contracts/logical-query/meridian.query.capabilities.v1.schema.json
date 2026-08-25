@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.storage/contracts/meridian.query.capabilities.v1.schema.json",
+  "title": "Meridian Query Capabilities V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "contractVersion", "adapterId", "operations", "nativeSemantics", "operators", "logicalTypes", "consistencyClasses", "guarantees", "features", "limits"],
+  "properties": {
+    "formatVersion": {"const": "meridian.query.capabilities.v1"},
+    "contractVersion": {"const": "1.0.0"},
+    "adapterId": {"type": "string", "minLength": 1},
+    "operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "nativeSemantics": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "operators": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "logicalTypes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "consistencyClasses": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["strong", "session", "eventual"]}},
+    "guarantees": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "features": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "limits": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+  }
+}
+

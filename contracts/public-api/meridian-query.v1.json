@@ -1,0 +1,26 @@
+{
+  "formatVersion": "meridian.query.public-api.v1",
+  "package": "meridian-storage-query",
+  "version": "1.0.0",
+  "catalogsOwned": [],
+  "catalogsUsed": ["structured", "evidence"],
+  "operationFormat": "meridian.operation.query.v1",
+  "capabilityFormat": "meridian.query.capabilities.v1",
+  "cursorFormat": "meridian.query.cursor.v1",
+  "design": {
+    "hldRevision": 56,
+    "catalogsRevision": 70,
+    "queryLldRevision": 46,
+    "adapterRevision": 24
+  },
+  "forbiddenPublicConcepts": ["query Catalog", "NativeQuery", "Adapter selection", "Engine selection"],
+  "invariants": [
+    "mapping-first Expressions",
+    "one Operation per Expression",
+    "one Binding per Operation",
+    "deterministic canonical JSON",
+    "bounded exact residuals only",
+    "signed opaque live-keyset cursors"
+  ]
+}
+

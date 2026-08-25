@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.storage/contracts/meridian.query.cursor.v1.schema.json",
+  "title": "Meridian Query Cursor Payload V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "keyId", "planFingerprint", "schemaFingerprints", "registryFingerprint", "scopeFingerprint", "sortTuple", "pageSize", "issuedAt", "expiresAt"],
+  "properties": {
+    "formatVersion": {"const": "meridian.query.cursor.v1"},
+    "keyId": {"type": "string", "minLength": 1},
+    "planFingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "schemaFingerprints": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}},
+    "registryFingerprint": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "scopeFingerprint": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "sortTuple": {"type": "array"},
+    "pageSize": {"type": "integer", "minimum": 1, "maximum": 500},
+    "issuedAt": {"type": "integer", "minimum": 0},
+    "expiresAt": {"type": "integer", "minimum": 1}
+  }
+}
+
