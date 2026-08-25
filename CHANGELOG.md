@@ -1,0 +1,18 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
+# Changelog
+
+All notable changes follow Keep a Changelog and semantic versioning.
+
+## 1.0.0 - 2026-08-25
+
+- Added the immutable Meridian V1 query AST and mapping-first fluent API.
+- Added filters, projection, ordering, pagination, full-text, WGS84 distance, time-series,
+  aggregation, joins, explicit relation traversal, and registry-closed all-neighbor traversal.
+- Added canonical `meridian.operation.query.v1` serialization and released Core integration.
+- Added nested semantic requirement inference, startup/compile validation, reviewed budgets, and
+  single-Binding enforcement.
+- Added native/exact-rewrite/proved-residual/rejected planning and adapter translation contracts.
+- Added signed live-keyset cursors, redacted diagnostics, JSON Schemas, conformance fixtures, CI,
+  deterministic artifacts, and Apache-2.0 licensing.
+- Explicitly excluded `NativeQuery` and all Engine-selection/public-backend syntax from V1.

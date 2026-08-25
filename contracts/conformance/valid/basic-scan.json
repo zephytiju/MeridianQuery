@@ -1,0 +1,58 @@
+{
+  "formatVersion": "meridian.operation.query.v1",
+  "catalog": "structured",
+  "targets": [
+    {
+      "resource": {
+        "catalog": "structured",
+        "namespace": "conformance",
+        "name": "users"
+      },
+      "schema": null
+    }
+  ],
+  "operation": "scan",
+  "result": {
+    "shape": "records",
+    "projection": [
+      {"expression": {"kind": "field", "name": "id"}},
+      {"expression": {"kind": "field", "name": "name"}}
+    ],
+    "includeTotal": false
+  },
+  "filter": {
+    "kind": "gte",
+    "left": {"kind": "field", "name": "age"},
+    "right": {"kind": "literal", "logicalType": "int64", "value": 18}
+  },
+  "joins": [],
+  "grouping": [],
+  "aggregates": [],
+  "traversal": null,
+  "order": [
+    {
+      "expression": {"kind": "field", "name": "age"},
+      "direction": "desc",
+      "nulls": "last"
+    }
+  ],
+  "page": {"size": 25, "cursor": null, "pointInTime": false},
+  "consistency": "strong",
+  "options": {
+    "budget": {
+      "deadlineMs": 30000,
+      "maxResultValues": 500,
+      "maxNormalizedBytes": 16777216,
+      "maxTraversalDepth": 8,
+      "maxRelationResources": 32,
+      "maxVisitedValues": 100000,
+      "maxReturnedPaths": 10000,
+      "maxMembershipNames": 10000,
+      "maxFacets": 100,
+      "maxResidualRows": 10000,
+      "maxResidualBytes": 16777216,
+      "workloadProfile": "default"
+    }
+  },
+  "extensions": {}
+}

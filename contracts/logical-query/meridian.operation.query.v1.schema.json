@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meridian.storage/contracts/meridian.operation.query.v1.schema.json",
+  "title": "Meridian Query Operation V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion", "catalog", "targets", "operation", "result", "filter", "joins",
+    "grouping", "aggregates", "traversal", "order", "page", "consistency", "options",
+    "extensions"
+  ],
+  "properties": {
+    "formatVersion": {"const": "meridian.operation.query.v1"},
+    "catalog": {"enum": ["structured", "evidence"]},
+    "targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/target"}},
+    "operation": {"enum": ["get", "scan", "search", "aggregate", "traverse", "insert", "upsert", "patch", "delete", "compareAndSet", "atomicClaim"]},
+    "result": {"$ref": "#/$defs/result"},
+    "filter": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/expression"}]},
+    "joins": {"type": "array", "items": {"$ref": "#/$defs/join"}},
+    "grouping": {"type": "array", "items": {"$ref": "#/$defs/expression"}},
+    "aggregates": {"type": "array", "items": {"$ref": "#/$defs/namedAggregate"}},
+    "traversal": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/traversal"}]},
+    "order": {"type": "array", "items": {"$ref": "#/$defs/sort"}},
+    "page": {"$ref": "#/$defs/page"},
+    "consistency": {"enum": ["strong", "session", "eventual"]},
+    "options": {
+      "type": "object",
+      "required": ["budget"],
+      "properties": {
+        "budget": {"$ref": "#/$defs/budget"},
+        "estimatedBytes": {"type": "integer", "minimum": 0},
+        "estimatedRows": {"type": "integer", "minimum": 0},
+        "resultByteLimit": {"type": "integer", "minimum": 0},
+        "scopeInjected": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(?:[A-Za-z][A-Za-z0-9+.-]*://\\S+|[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?/[A-Za-z0-9._/-]+)$"
+      }
+    }
+  },
+  "$defs": {
+    "resource": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog", "namespace", "name"],
+      "properties": {
+        "catalog": {"enum": ["structured", "object", "cache", "evidence", "streaming"]},
+        "namespace": {"type": "string", "minLength": 1, "maxLength": 255},
+        "name": {"type": "string", "minLength": 1, "maxLength": 255}
+      }
+    },
+    "schema": {
+      "type": "object", "additionalProperties": false,
+      "required": ["catalog", "namespace", "name", "version"],
+      "properties": {
+        "catalog": {"type": "string"}, "namespace": {"type": "string"},
+        "name": {"type": "string"}, "version": {"type": "string"}
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resource", "schema"],
+      "properties": {
+        "resource": {"$ref": "#/$defs/resource"},
+        "schema": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/schema"}]}
+      }
+    },
+    "expression": {
+      "oneOf": [
+        {"$ref": "#/$defs/field"}, {"$ref": "#/$defs/literal"},
+        {"$ref": "#/$defs/parameter"}, {"$ref": "#/$defs/binary"},
+        {"$ref": "#/$defs/boolean"}, {"$ref": "#/$defs/unary"},
+        {"$ref": "#/$defs/nullTest"}, {"$ref": "#/$defs/membership"},
+        {"$ref": "#/$defs/timestampRange"}, {"$ref": "#/$defs/documentPath"},
+        {"$ref": "#/$defs/fullText"}, {"$ref": "#/$defs/point"},
+        {"$ref": "#/$defs/distance"}, {"$ref": "#/$defs/distanceWithin"},
+        {"$ref": "#/$defs/aggregate"}
+      ]
+    },
+    "field": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "name"],
+      "properties": {"kind": {"const": "field"}, "name": {"type": "string", "minLength": 1}, "resource": {"type": "string", "minLength": 1}}
+    },
+    "literal": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "logicalType", "value"],
+      "properties": {"kind": {"const": "literal"}, "logicalType": {"oneOf": [{"type": "string"}, {"type": "object"}]}, "value": {}}
+    },
+    "parameter": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "name", "logicalType"],
+      "properties": {"kind": {"const": "parameter"}, "name": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"}, "logicalType": {"oneOf": [{"type": "string"}, {"type": "object"}]}}
+    },
+    "binary": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "left", "right"],
+      "properties": {"kind": {"enum": ["eq", "ne", "lt", "lte", "gt", "gte", "add", "subtract", "multiply", "divide", "modulo", "prefix", "contains"]}, "left": {"$ref": "#/$defs/expression"}, "right": {"$ref": "#/$defs/expression"}}
+    },
+    "boolean": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "operands"],
+      "properties": {"kind": {"enum": ["and", "or"]}, "operands": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/expression"}}}
+    },
+    "unary": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "operand"],
+      "properties": {"kind": {"enum": ["not", "negate"]}, "operand": {"$ref": "#/$defs/expression"}}
+    },
+    "nullTest": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "operand", "expected"],
+      "properties": {"kind": {"const": "isNull"}, "operand": {"$ref": "#/$defs/expression"}, "expected": {"type": "boolean"}}
+    },
+    "membership": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "operand", "values"],
+      "properties": {"kind": {"enum": ["in", "notIn"]}, "operand": {"$ref": "#/$defs/expression"}, "values": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/expression"}}}
+    },
+    "timestampRange": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "operand", "start", "end", "includeStart", "includeEnd"],
+      "properties": {"kind": {"const": "timestampRange"}, "operand": {"$ref": "#/$defs/expression"}, "start": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/expression"}]}, "end": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/expression"}]}, "includeStart": {"type": "boolean"}, "includeEnd": {"type": "boolean"}}
+    },
+    "documentPath": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "document", "pointer"],
+      "properties": {"kind": {"const": "documentPath"}, "document": {"$ref": "#/$defs/expression"}, "pointer": {"type": "string", "pattern": "^/"}}
+    },
+    "fullText": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "query", "fields", "analyzer", "fuzzyTolerance", "highlights", "ranking", "facets"],
+      "properties": {"kind": {"const": "fullText"}, "query": {"type": "string", "minLength": 1}, "fields": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/field"}}, "analyzer": {"type": "string"}, "fuzzyTolerance": {"type": "integer", "minimum": 0, "maximum": 2}, "highlights": {"type": "array", "items": {"type": "string"}}, "ranking": {"type": "string"}, "facets": {"type": "array", "items": {"type": "string"}}}
+    },
+    "point": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "coordinates", "crs"],
+      "properties": {"kind": {"const": "point"}, "coordinates": {"type": "array", "minItems": 2, "maxItems": 2, "prefixItems": [{"type": "number", "minimum": -180, "maximum": 180}, {"type": "number", "minimum": -90, "maximum": 90}], "items": false}, "crs": {"type": "string"}}
+    },
+    "distance": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "left", "right", "unit"],
+      "properties": {"kind": {"const": "distance"}, "left": {"$ref": "#/$defs/expression"}, "right": {"$ref": "#/$defs/expression"}, "unit": {"const": "m"}}
+    },
+    "distanceWithin": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "left", "right", "distance", "unit"],
+      "properties": {"kind": {"const": "distanceWithin"}, "left": {"$ref": "#/$defs/expression"}, "right": {"$ref": "#/$defs/expression"}, "distance": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?$"}, "unit": {"const": "m"}}
+    },
+    "aggregate": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "function", "operand", "distinct"],
+      "properties": {"kind": {"const": "aggregate"}, "function": {"enum": ["count", "sum", "avg", "min", "max", "percentile"]}, "operand": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/expression"}]}, "distinct": {"type": "boolean"}}
+    },
+    "projection": {
+      "type": "object", "additionalProperties": false, "required": ["expression"],
+      "properties": {"expression": {"$ref": "#/$defs/expression"}, "alias": {"type": "string", "minLength": 1}}
+    },
+    "result": {
+      "type": "object", "additionalProperties": false, "required": ["shape", "projection", "includeTotal"],
+      "properties": {"shape": {"enum": ["records", "relations", "paths", "aggregate", "search"]}, "projection": {"type": "array", "items": {"$ref": "#/$defs/projection"}}, "includeTotal": {"type": "boolean"}}
+    },
+    "join": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "target", "on"],
+      "properties": {"kind": {"enum": ["inner", "left"]}, "target": {"$ref": "#/$defs/target"}, "on": {"$ref": "#/$defs/expression"}}
+    },
+    "namedAggregate": {
+      "type": "object", "additionalProperties": false, "required": ["name", "expression"],
+      "properties": {"name": {"type": "string", "minLength": 1}, "expression": {"$ref": "#/$defs/aggregate"}}
+    },
+    "sort": {
+      "type": "object", "additionalProperties": false, "required": ["expression", "direction", "nulls"],
+      "properties": {"expression": {"$ref": "#/$defs/expression"}, "direction": {"enum": ["asc", "desc"]}, "nulls": {"enum": ["first", "last"]}}
+    },
+    "page": {
+      "type": "object", "additionalProperties": false, "required": ["size", "cursor", "pointInTime"],
+      "properties": {"size": {"type": "integer", "minimum": 1, "maximum": 500}, "cursor": {"type": ["string", "null"]}, "pointInTime": {"type": "boolean"}}
+    },
+    "budget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["deadlineMs", "maxResultValues", "maxNormalizedBytes", "maxTraversalDepth", "maxRelationResources", "maxVisitedValues", "maxReturnedPaths", "maxMembershipNames", "maxFacets", "maxResidualRows", "maxResidualBytes", "workloadProfile"],
+      "properties": {
+        "deadlineMs": {"type": "integer", "minimum": 1}, "maxResultValues": {"type": "integer", "minimum": 1},
+        "maxNormalizedBytes": {"type": "integer", "minimum": 1}, "maxTraversalDepth": {"type": "integer", "minimum": 1},
+        "maxRelationResources": {"type": "integer", "minimum": 1}, "maxVisitedValues": {"type": "integer", "minimum": 1},
+        "maxReturnedPaths": {"type": "integer", "minimum": 1}, "maxMembershipNames": {"type": "integer", "minimum": 1},
+        "maxFacets": {"type": "integer", "minimum": 1}, "maxResidualRows": {"type": "integer", "minimum": 1},
+        "maxResidualBytes": {"type": "integer", "minimum": 1}, "workloadProfile": {"type": "string", "minLength": 1}
+      }
+    },
+    "recordRef": {
+      "type": "object", "additionalProperties": false, "required": ["collectionRef", "recordId"],
+      "properties": {"collectionRef": {"$ref": "#/$defs/resource"}, "recordId": {}}
+    },
+    "traversal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["start", "relationSelector", "direction", "minDepth", "maxDepth", "recordFilter", "relationPredicates", "uniqueness", "resultShape"],
+      "properties": {
+        "start": {"$ref": "#/$defs/recordRef"},
+        "relationSelector": {"type": "object", "additionalProperties": false, "required": ["kind", "relationCollections", "registryFingerprint"], "properties": {"kind": {"enum": ["explicit", "allNeighbors"]}, "relationCollections": {"type": "array", "items": {"$ref": "#/$defs/resource"}}, "registryFingerprint": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"}}},
+        "direction": {"enum": ["outbound", "inbound", "any"]}, "minDepth": {"type": "integer", "minimum": 1, "maximum": 32}, "maxDepth": {"type": "integer", "minimum": 1, "maximum": 32},
+        "recordFilter": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/expression"}]}, "relationPredicates": {"type": "object", "additionalProperties": {"$ref": "#/$defs/expression"}},
+        "uniqueness": {"const": "simple-path"}, "resultShape": {"enum": ["records", "relations", "paths"]}
+      }
+    }
+  }
+}
