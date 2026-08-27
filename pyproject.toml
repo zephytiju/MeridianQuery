@@ -42,9 +42,9 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/zephytiju/meridian-storage-query#readme"
-Issues = "https://github.com/zephytiju/meridian-storage-query/issues"
-Repository = "https://github.com/zephytiju/meridian-storage-query"
+Documentation = "https://github.com/zephytiju/MeridianQuery#readme"
+Issues = "https://github.com/zephytiju/MeridianQuery/issues"
+Repository = "https://github.com/zephytiju/MeridianQuery"
 
 [tool.hatch.build]
 include = [
