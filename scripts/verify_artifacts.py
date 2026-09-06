@@ -12,7 +12,7 @@ from email.parser import BytesParser
 from pathlib import Path
 
 PACKAGE = "meridian-storage-query"
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 REQUIRED_DEPENDENCIES = {
     "meridian-storage-core==1.0.1",
     "meridian-storage-semantics==2.0.0",
