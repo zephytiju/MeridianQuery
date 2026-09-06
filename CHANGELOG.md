@@ -4,6 +4,11 @@
 
 All notable changes follow Keep a Changelog and semantic versioning.
 
+## 1.0.2 - 2026-09-06
+
+- Accept complete pip requirement arguments in the installed-package verifier, so public release
+  checks can place test extras before the version. Dependency pins and Query behavior are unchanged.
+
 ## 1.0.1 - 2026-09-06
 
 - Consume the published Core 1.0.1 and Semantics 2.0.0 release set through normal dependency resolution.

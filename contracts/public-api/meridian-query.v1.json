@@ -1,7 +1,7 @@
 {
   "formatVersion": "meridian.query.public-api.v1",
   "package": "meridian-storage-query",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "catalogsOwned": [],
   "catalogsUsed": ["structured", "evidence"],
   "operationFormat": "meridian.operation.query.v1",

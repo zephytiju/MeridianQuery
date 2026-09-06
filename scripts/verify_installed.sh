@@ -10,7 +10,7 @@ trap 'rm -rf -- "${QUERY_TMP}"' EXIT
 # Resolve the candidate wheel (or an exact public release) and all dependencies normally.
 "${QUERY_PYTHON}" -m venv "${QUERY_TMP}/venv"
 "${QUERY_TMP}/venv/bin/python" -m pip install --index-url https://pypi.org/simple \
-  "${1:-${QUERY_ROOT}/dist/meridian_storage_query-1.0.1-py3-none-any.whl}[test]"
+  "${1:-${QUERY_ROOT}/dist/meridian_storage_query-1.0.2-py3-none-any.whl[test]}"
 "${QUERY_TMP}/venv/bin/python" -m pip check
 cd "${QUERY_TMP}"
 unset PYTHONPATH
