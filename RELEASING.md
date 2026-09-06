@@ -6,7 +6,9 @@
    `CHANGELOG.md` to the same semantic version.
 2. Run `scripts/verify.sh` on a clean checkout using released dependencies from PyPI.
 3. Build twice with `SOURCE_DATE_EPOCH` fixed and compare wheel/sdist SHA-256 digests.
-4. Run `scripts/verify_artifacts.py dist` and install the wheel into a fresh environment.
+4. Run `scripts/verify_artifacts.py dist` and `scripts/verify_installed.sh` to test the wheel
+   in a fresh environment with normal PyPI dependency resolution. After publication, repeat with
+   `scripts/verify_installed.sh meridian-storage-query==1.0.1` for registry-only evidence.
 5. Merge a green reviewed pull request to protected `main`.
 6. Create an annotated `vX.Y.Z` tag on the merged `main` commit and push it.
 7. The release workflow verifies tag/version/main ancestry, reruns all gates, builds artifacts,

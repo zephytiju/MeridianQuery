@@ -4,6 +4,12 @@
 
 All notable changes follow Keep a Changelog and semantic versioning.
 
+## 1.0.1 - 2026-09-06
+
+- Consume the published Core 1.0.1 and Semantics 2.0.0 release set through normal dependency resolution.
+- Align compatibility metadata and release verification; preserve Query v1 plans, fingerprints,
+  builders, normalization, ordering, cursors, and errors.
+
 ## 1.0.0 - 2026-08-25
 
 - Added the immutable Meridian V1 query AST and mapping-first fluent API.
