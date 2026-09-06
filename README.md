@@ -14,11 +14,11 @@ The library does **not** define a `query` Catalog. Consumers use a registered Ca
 ## Install
 
 ```bash
-python -m pip install meridian-storage-query==1.0.0
+python -m pip install meridian-storage-query==1.0.1
 ```
 
-Python 3.12–3.14 is supported. Version 1.0.0 consumes the released
-`meridian-storage-core==1.0.0` and `meridian-storage-semantics==1.0.0` contracts.
+Python 3.12–3.14 is supported. Version 1.0.1 consumes the released
+`meridian-storage-core==1.0.1` and `meridian-storage-semantics==2.0.0` contracts.
 
 ## Mapping-first query
 

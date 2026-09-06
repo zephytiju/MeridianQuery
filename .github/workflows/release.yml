@@ -57,6 +57,8 @@ jobs:
           python -m pytest --cov=meridian_storage.query --cov-report=term-missing
       - name: Build deterministic artifacts
         run: bash scripts/build_reproducible.sh
+      - name: Verify clean installed-package regressions
+        run: bash scripts/verify_installed.sh
       - name: Write checksums
         run: sha256sum dist/*.whl dist/*.tar.gz > dist/SHA256SUMS
       - name: Generate SPDX SBOM

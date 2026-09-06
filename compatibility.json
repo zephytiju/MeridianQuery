@@ -1,11 +1,11 @@
 {
   "formatVersion": "meridian.package.compatibility.v1",
   "package": "meridian-storage-query",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "python": ">=3.12,<3.15",
   "dependencies": {
-    "meridian-storage-core": "==1.0.0",
-    "meridian-storage-semantics": "==1.0.0"
+    "meridian-storage-core": "==1.0.1",
+    "meridian-storage-semantics": "==2.0.0"
   },
   "contracts": {
     "operation": "meridian.operation.query.v1",

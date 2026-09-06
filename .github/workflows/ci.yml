@@ -62,6 +62,8 @@ jobs:
         env:
           MERIDIAN_DIST_DIR: dist
         run: python -m pytest tests/packaging -q
+      - name: Verify clean installed-package regressions
+        run: bash scripts/verify_installed.sh
       - name: Upload verified distributions
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
