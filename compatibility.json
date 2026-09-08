@@ -1,11 +1,11 @@
 {
   "formatVersion": "meridian.package.compatibility.v1",
   "package": "meridian-storage-query",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "python": ">=3.12,<3.15",
   "dependencies": {
-    "meridian-storage-core": "==1.0.1",
-    "meridian-storage-semantics": "==2.0.0"
+    "meridian-storage-core": ">=1.0.1,<2",
+    "meridian-storage-semantics": ">=2.0.0,<3"
   },
   "contracts": {
     "operation": "meridian.operation.query.v1",
@@ -16,10 +16,13 @@
   "designRevisions": {
     "hld": 56,
     "catalogsAndPublicInterfaces": 70,
-    "queryLld": 46,
+    "queryLld": 81,
     "adapterLld": 24
   },
   "catalogsOwned": [],
-  "catalogsUsed": ["structured", "evidence"],
+  "catalogsUsed": [
+    "structured",
+    "evidence"
+  ],
   "nativeQuery": "excluded-post-v1"
 }

@@ -99,4 +99,4 @@ def test_public_python_surface_contains_no_native_or_engine_selection_api() -> N
     assert not any("NativeQuery" in name or "Engine" in name for name in names)
     assert "MeridianQuery" in names
     assert "QueryOperation" in names
-    assert query_api.__version__ == "1.0.2"
+    assert query_api.__version__ == "1.0.3"

@@ -12,10 +12,10 @@ from email.parser import BytesParser
 from pathlib import Path
 
 PACKAGE = "meridian-storage-query"
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 REQUIRED_DEPENDENCIES = {
-    "meridian-storage-core==1.0.1",
-    "meridian-storage-semantics==2.0.0",
+    "meridian-storage-core<2,>=1.0.1",
+    "meridian-storage-semantics<3,>=2.0.0",
 }
 
 
@@ -43,7 +43,7 @@ def verify_wheel(path: Path) -> dict[str, object]:
             raise SystemExit("wheel lacks the Apache-2.0 License-Expression")
         dependencies = set(metadata.get_all("Requires-Dist", ()))
         if not dependencies >= REQUIRED_DEPENDENCIES:
-            raise SystemExit(f"wheel dependency pins are incomplete: {sorted(dependencies)}")
+            raise SystemExit(f"wheel dependency bounds are incomplete: {sorted(dependencies)}")
         required = {
             "meridian_storage/query/__init__.py",
             "meridian_storage/query/py.typed",

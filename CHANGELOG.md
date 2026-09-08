@@ -4,6 +4,14 @@
 
 All notable changes follow Keep a Changelog and semantic versioning.
 
+## 1.0.3 — 2026-09-08
+
+- Replace historical exact dependency recipes with Core `>=1.0.1,<2` and Semantics
+  `>=2.0.0,<3` public API compatibility bounds.
+- Validate historical and Core 1.1.0 dependency closures independently, retaining
+  expression/type validation, bounded planning, cursor and fingerprint contracts.
+- Record exact public dependency hashes separately from package compatibility metadata.
+
 ## 1.0.2 - 2026-09-06
 
 - Accept complete pip requirement arguments in the installed-package verifier, so public release
