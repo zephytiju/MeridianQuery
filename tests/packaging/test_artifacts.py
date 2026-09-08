@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 @pytest.mark.packaging
 def test_version_ledgers_match_release() -> None:
     subprocess.run(
-        [sys.executable, "scripts/check_version.py", "v1.0.2"],
+        [sys.executable, "scripts/check_version.py", "v1.0.3"],
         cwd=ROOT,
         check=True,
     )

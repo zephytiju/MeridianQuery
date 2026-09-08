@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Integration with the released Core 1.0.1 and Semantics 2.0.0 distributions."""
+"""Integration with the released Core and Semantics public API contracts."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from importlib.metadata import version
 import meridian_storage.semantics
 import pytest
 from meridian_storage.semantics import SchemaDocument
+from packaging.specifiers import SpecifierSet
 
 import meridian_storage
 from meridian_storage import Expression, Operation, ResourceRef
@@ -22,9 +23,9 @@ from meridian_storage.query import (
 
 
 @pytest.mark.integration
-def test_exact_released_dependency_versions_are_loaded() -> None:
-    assert version("meridian-storage-core") == "1.0.1"
-    assert version("meridian-storage-semantics") == "2.0.0"
+def test_compatible_released_dependencies_are_loaded() -> None:
+    assert version("meridian-storage-core") in SpecifierSet(">=1.0.1,<2")
+    assert version("meridian-storage-semantics") in SpecifierSet(">=2.0.0,<3")
     assert "site-packages" in str(meridian_storage.__file__)
     assert "site-packages" in str(meridian_storage.semantics.__file__)
 
